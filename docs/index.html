@@ -1,1 +1,1153 @@
-placeholder
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warehouse Rota</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2321;
+    --paper:#F5F6F2;
+    --panel:#FFFFFF;
+    --line:#DEDFD8;
+    --amber:#FFB800;
+    --amber-deep:#B87F00;
+    --red:#C43D3D;
+    --red-bg:#FBE7E7;
+    --green:#2F8F4E;
+    --green-bg:#E7F5EC;
+    --muted:#6B7269;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.05);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;}
+  #app{max-width:1400px;margin:0 auto;padding:20px 24px 80px;}
+
+  /* ---- Header / hazard signature ---- */
+  .hazard-rule{
+    height:8px;width:100%;border-radius:2px;
+    background: repeating-linear-gradient(135deg, var(--ink) 0 14px, var(--amber) 14px 28px);
+    margin: 14px 0 22px;
+  }
+  header.top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand .mark{
+    width:40px;height:40px;border-radius:8px;background:var(--ink);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-family:'Archivo Black',sans-serif;font-size:18px;flex-shrink:0;
+  }
+  h1{font-family:'Archivo Black',sans-serif;font-size:22px;letter-spacing:0.02em;margin:0;text-transform:uppercase;}
+  .subtitle{color:var(--muted);font-size:12.5px;margin-top:2px;}
+
+  .weeknav{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;box-shadow:var(--shadow);}
+  .weeknav button.nav{background:var(--ink);color:#fff;border:none;width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:15px;line-height:1;}
+  .weeknav button.nav:hover{background:#333;}
+  .weeklabel{font-weight:700;font-size:13.5px;min-width:150px;text-align:center;}
+  .weeklabel small{display:block;font-weight:500;color:var(--muted);font-size:11px;}
+
+  nav.tabs{display:flex;gap:6px;margin:22px 0 16px;border-bottom:2px solid var(--line);}
+  nav.tabs button{
+    background:none;border:none;padding:10px 16px;font-family:'Inter';font-weight:700;font-size:13px;
+    color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:0.03em;border-bottom:3px solid transparent;margin-bottom:-2px;
+  }
+  nav.tabs button.active{color:var(--ink);border-bottom-color:var(--amber);}
+  nav.tabs button:hover{color:var(--ink);}
+
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
+  .btn{
+    background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:8px 14px;border-radius:8px;
+    font-family:'Inter';font-weight:600;font-size:12.5px;cursor:pointer;box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn:hover{border-color:#c7c9c0;}
+  .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .btn.primary:hover{background:#333;}
+  .btn.amber{background:var(--amber);border-color:var(--amber-deep);color:var(--ink);}
+  .btn.danger{color:var(--red);}
+  .btn.small{padding:5px 10px;font-size:11.5px;}
+  .btn:disabled{opacity:0.45;cursor:not-allowed;}
+
+  /* ---- Rota grid ---- */
+  .rota-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:var(--shadow);}
+  table.rota{border-collapse:collapse;width:100%;min-width:1180px;}
+  table.rota th, table.rota td{border:1px solid var(--line);vertical-align:top;}
+  table.rota thead th{
+    background:var(--ink);color:#fff;padding:10px 8px;font-family:'Archivo Black';font-weight:400;
+    font-size:12px;letter-spacing:0.03em;text-transform:uppercase;text-align:left;position:sticky;top:0;z-index:2;
+  }
+  table.rota thead th .daynum{display:block;color:var(--amber);font-size:11px;margin-top:2px;font-family:'JetBrains Mono';}
+  .closed-toggle{display:flex;align-items:center;gap:4px;margin-top:6px;font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:#D8DAD2;cursor:pointer;}
+  .closed-toggle input{margin:0;cursor:pointer;}
+  td.closed-cell{background:repeating-linear-gradient(135deg, #EFEFEA 0 10px, #F7F7F3 10px 20px);}
+  .closed-msg{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.03em;text-align:center;padding:14px 4px;}
+  table.rota th.shiftcol{width:150px;background:var(--paper);color:var(--ink);position:sticky;left:0;z-index:3;}
+  table.rota td.shiftcell{
+    background:var(--paper);position:sticky;left:0;z-index:1;padding:10px;
+  }
+  .shift-name{font-weight:800;font-size:13px;}
+  .shift-time{font-family:'JetBrains Mono';font-size:11px;color:var(--muted);margin-top:2px;}
+  td.daycell{padding:8px;min-width:170px;max-width:190px;}
+  td.daycell.today{background:#FFFBEE;}
+
+  .chip{
+    display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--paper);
+    border:1px solid var(--line);border-radius:7px;padding:5px 7px;margin-bottom:5px;font-size:12px;
+  }
+  .chip .who{font-weight:700;}
+  .chip .station{display:block;font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono';text-transform:uppercase;}
+  .chip .rm{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 2px;}
+  .chip .rm:hover{color:var(--red);}
+  .chip.warn{border-color:var(--red);background:var(--red-bg);}
+
+  .addrow{display:flex;gap:4px;margin-top:4px;}
+  select.mini, input.mini{
+    font-family:'Inter';font-size:11.5px;border:1px solid var(--line);border-radius:6px;padding:4px;background:#fff;flex:1;min-width:0;
+  }
+  .addbtn{background:var(--ink);color:var(--amber);border:none;border-radius:6px;width:24px;font-size:14px;cursor:pointer;flex-shrink:0;}
+  .addbtn:hover{background:#333;}
+  .addbtn:disabled{opacity:0.3;cursor:not-allowed;}
+
+  .coverage-strip{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);}
+  .badge{font-family:'JetBrains Mono';font-size:10px;font-weight:700;border-radius:5px;padding:2px 5px;}
+  .badge.ok{background:var(--green-bg);color:var(--green);}
+  .badge.under{background:var(--red-bg);color:var(--red);}
+  .badge.zero{background:#EFEFEA;color:var(--muted);}
+
+  /* ---- Staff / Stations tables ---- */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow);margin-bottom:18px;}
+  .card h2{font-family:'Archivo Black';font-size:15px;text-transform:uppercase;margin:0 0 14px;letter-spacing:0.02em;}
+  table.plain{width:100%;border-collapse:collapse;}
+  table.plain th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.03em;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line);}
+  table.plain td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  table.plain input[type=text], table.plain input[type=number]{
+    border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-family:'Inter';font-size:13px;width:100%;
+  }
+  table.plain input[type=number]{width:64px;text-align:center;}
+  .inactive-row{opacity:0.45;}
+  .iconbtn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:4px;}
+  .iconbtn:hover{color:var(--red);}
+  .tag{font-family:'JetBrains Mono';font-size:10px;background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:2px 6px;color:var(--muted);}
+
+  /* ---- Print tab ---- */
+  .print-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
+  #printSheet{background:#fff;border:1px solid var(--line);border-radius:12px;padding:34px;box-shadow:var(--shadow);}
+  .psheet-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:4px solid var(--ink);padding-bottom:12px;margin-bottom:18px;}
+  .psheet-header h2{font-family:'Archivo Black';font-size:24px;margin:0;text-transform:uppercase;}
+  .psheet-header .pdate{font-family:'JetBrains Mono';font-size:13px;color:var(--muted);}
+  .pstation{margin-bottom:18px;break-inside:avoid;}
+  .pstation h3{
+    font-family:'Archivo Black';font-size:13px;text-transform:uppercase;background:var(--ink);color:var(--amber);
+    display:inline-block;padding:4px 10px;border-radius:5px;margin:0 0 8px;
+  }
+  .pstation-empty{color:var(--muted);font-size:12px;font-style:italic;}
+  table.psheet{width:100%;border-collapse:collapse;}
+  table.psheet th{text-align:left;font-size:10.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding:4px 6px;}
+  table.psheet td{padding:5px 6px;font-size:13px;border-bottom:1px solid #EEEEE7;}
+  table.psheet td.short{font-family:'JetBrains Mono';font-size:12px;color:var(--muted);}
+
+  .empty-note{color:var(--muted);font-size:12.5px;padding:20px;text-align:center;}
+  .shared-note{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:14px;}
+  .shared-note .dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;}
+  .setup-banner{background:var(--red-bg);border:1px solid var(--red);color:var(--red);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;line-height:1.5;}
+  .setup-banner code{background:#fff;border:1px solid var(--red);border-radius:4px;padding:1px 5px;font-family:'JetBrains Mono';font-size:11px;}
+
+  .gaps-banner{
+    background:var(--red-bg);border:1px solid var(--red);color:var(--red);border-radius:10px;
+    padding:10px 14px;margin-bottom:14px;font-size:12.5px;font-weight:600;
+  }
+  .gaps-banner .gtitle{font-family:'Archivo Black';font-size:11px;text-transform:uppercase;display:block;margin-bottom:6px;letter-spacing:0.02em;}
+  .gaps-banner.ok{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+  .gaps-list{margin:0;padding-left:18px;}
+  .gaps-list li{margin-bottom:2px;}
+
+  tr.offrow td{background:#FAFAF6;}
+  .off-cell{padding:8px;}
+  .off-label{font-size:10px;text-transform:uppercase;letter-spacing:0.03em;color:var(--muted);font-weight:700;display:block;margin-bottom:5px;}
+  .off-chip{display:inline-flex;align-items:center;gap:5px;background:#EFEFEA;border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-size:11.5px;margin:0 4px 4px 0;}
+  .off-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:0;}
+  .off-chip button:hover{color:var(--red);}
+  .off-addrow{display:flex;gap:4px;margin-top:2px;}
+
+  .hours-card{margin-top:18px;}
+  table.hours{width:100%;border-collapse:collapse;}
+  table.hours th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line);}
+  table.hours td{padding:6px 8px;border-bottom:1px solid var(--line);font-size:13px;}
+  table.hours td.hrs{font-family:'JetBrains Mono';font-weight:700;}
+  table.hours tr.over td.hrs{color:var(--red);}
+
+  .print-mode-toggle{display:flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;}
+  .print-mode-toggle button{background:none;border:none;padding:6px 12px;font-size:12px;font-weight:700;border-radius:6px;cursor:pointer;color:var(--muted);}
+  .print-mode-toggle button.active{background:var(--ink);color:#fff;}
+  .printed-on{font-family:'JetBrains Mono';font-size:10.5px;color:var(--muted);text-align:right;margin-bottom:6px;}
+  .pweek-day{margin-bottom:26px;}
+  .pweek-day:not(:last-child){break-after:page;}
+  .pweek-day h2{font-family:'Archivo Black';font-size:18px;text-transform:uppercase;border-bottom:3px solid var(--ink);padding-bottom:8px;margin-bottom:4px;}
+  .pweek-off{font-size:11.5px;color:var(--muted);margin:0 0 14px;}
+
+  .readonly-note{font-size:11.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:14px;}
+
+  @media print{
+    body *{visibility:hidden;}
+    #printSheet, #printSheet *{visibility:visible;}
+    #printSheet{position:absolute;top:0;left:0;width:100%;border:none;box-shadow:none;border-radius:0;padding:0;}
+    .no-print{display:none !important;}
+  }
+  @media (max-width:720px){
+    header.top{flex-direction:column;}
+    .weeknav{width:100%;justify-content:space-between;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <div class="mark">W</div>
+      <div>
+        <h1>Warehouse Rota</h1>
+        <div class="subtitle">Staff &amp; station planning</div>
+      </div>
+    </div>
+    <div class="weeknav no-print">
+      <button class="nav" id="prevWeek">‹</button>
+      <div class="weeklabel" id="weekLabel"></div>
+      <button class="nav" id="nextWeek">›</button>
+    </div>
+  </header>
+  <div class="hazard-rule"></div>
+
+  <div id="syncStatus" class="shared-note no-print"><span class="dot" style="background:var(--muted);"></span> Connecting to GitHub&hellip;</div>
+  <div id="setupBanner" class="setup-banner no-print" style="display:none;"></div>
+
+  <nav class="tabs no-print">
+    <button data-tab="rota" class="active">Rota</button>
+    <button data-tab="team">Team View</button>
+    <button data-tab="staff">Staff</button>
+    <button data-tab="stations">Stations</button>
+    <button data-tab="print">Print</button>
+  </nav>
+
+  <div id="tab-rota" class="tabpanel"></div>
+  <div id="tab-team" class="tabpanel" style="display:none"></div>
+  <div id="tab-staff" class="tabpanel" style="display:none"></div>
+  <div id="tab-stations" class="tabpanel" style="display:none"></div>
+  <div id="tab-print" class="tabpanel" style="display:none"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- constants ----------
+  var DAYS = [
+    {k:'mon', label:'Monday'}, {k:'tue', label:'Tuesday'}, {k:'wed', label:'Wednesday'},
+    {k:'thu', label:'Thursday'}, {k:'fri', label:'Friday'}, {k:'sat', label:'Saturday'}, {k:'sun', label:'Sunday'}
+  ];
+  var DEFAULT_SHIFTS = [
+    {id:'early',   name:'Early',    start:'06:00', end:'14:30'},
+    {id:'mid930',  name:'Mid',      start:'09:00', end:'17:30'},
+    {id:'mid1000', name:'Mid-Late', start:'10:00', end:'18:30'},
+    {id:'late',    name:'Late',     start:'13:30', end:'22:00'}
+  ];
+  var DEFAULT_STATIONS = [
+    {id:'gi',   name:'Goods In',  targets:{early:1, mid930:1, mid1000:0, late:1}},
+    {id:'pick', name:'Picking',   targets:{early:2, mid930:1, mid1000:1, late:2}},
+    {id:'pack', name:'Packing',   targets:{early:1, mid930:1, mid1000:0, late:1}},
+    {id:'repl', name:'Replen',    targets:{early:1, mid930:0, mid1000:0, late:1}}
+  ];
+
+  var uid = function(prefix){ return prefix + '_' + Math.random().toString(36).slice(2,9); };
+
+  // ---------- Storage connection (via Cloudflare Worker proxy) ----------
+  // The Worker holds the real GitHub token privately. This app only ever
+  // knows a shared passphrase, never the token itself. Every save becomes
+  // a git commit in your repo, so full rota history lives there forever.
+  var GITHUB_OWNER  = 'kieranhutchings-1'; // just used to build "view history" links below, not for auth
+  var GITHUB_REPO   = 'warehouse-rota';
+  var GITHUB_BRANCH = 'main';
+  var WORKER_URL = 'https://warehouse-rota.kieranhutchings.workers.dev';
+  var APP_SHARED_SECRET = 'Z4Qy7G__WnNx9aDQ2RRKhSqQYqJns-2c';
+
+  var tokenIsSet = function(){
+    return WORKER_URL && WORKER_URL.indexOf('PASTE_YOUR') !== 0 &&
+           APP_SHARED_SECRET && APP_SHARED_SECRET.indexOf('PASTE_YOUR') !== 0;
+  };
+
+  function b64EncodeUnicode(str){ return btoa(unescape(encodeURIComponent(str))); }
+  function b64DecodeUnicode(str){ return decodeURIComponent(escape(atob(str))); }
+
+  function proxyHeaders(extra){
+    return Object.assign({'X-App-Secret': APP_SHARED_SECRET}, extra || {});
+  }
+  function ghGetFile(path){
+    var url = WORKER_URL + '?path=' + encodeURIComponent(path);
+    return fetch(url, {headers: proxyHeaders()}).then(function(res){
+      if(!res.ok){
+        return res.text().then(function(t){ throw new Error('Read failed (' + res.status + '): ' + t.slice(0,200)); });
+      }
+      return res.json();
+    }).then(function(data){
+      if(data === null) return null;
+      return {sha: data.sha, json: JSON.parse(b64DecodeUnicode(data.content.replace(/\n/g,'')))};
+    });
+  }
+  function ghPutFile(path, obj, message){
+    var url = WORKER_URL + '?path=' + encodeURIComponent(path);
+    var content = b64EncodeUnicode(JSON.stringify(obj, null, 2));
+    function attempt(sha, retried){
+      return fetch(url, {
+        method: 'PUT',
+        headers: proxyHeaders({'Content-Type':'application/json'}),
+        body: JSON.stringify({message: message, content: content, sha: sha})
+      }).then(function(res){
+        if(res.status === 409 && !retried){
+          return ghGetFile(path).then(function(existing){
+            return attempt(existing ? existing.sha : undefined, true);
+          });
+        }
+        if(!res.ok){
+          return res.text().then(function(t){ throw new Error('Save failed (' + res.status + '): ' + t.slice(0,200)); });
+        }
+        return res.json();
+      });
+    }
+    return ghGetFile(path).then(function(existing){
+      return attempt(existing ? existing.sha : undefined, false);
+    });
+  }
+  // Serialize writes per file so two quick edits can't race each other's sha.
+  var saveQueues = {};
+  function queuedSave(path, obj, message){
+    var prev = saveQueues[path] || Promise.resolve();
+    var next = prev.catch(function(){}).then(function(){
+      return ghPutFile(path, obj, message);
+    });
+    saveQueues[path] = next;
+    return next;
+  }
+
+  function setSyncStatus(status, detail){
+    var el = document.getElementById('syncStatus');
+    if(!el) return;
+    var dotColor = status === 'ok' ? 'var(--green)' : (status === 'saving' ? 'var(--amber-deep)' : 'var(--red)');
+    var label = status === 'ok' ? 'Synced to GitHub' : (status === 'saving' ? 'Saving to GitHub&hellip;' : 'Sync failed');
+    el.innerHTML = '<span class="dot" style="background:'+dotColor+';"></span> ' + label + (detail ? ' &mdash; '.replace('&mdash;','-') + escapeHtml(detail) : '');
+  }
+
+  // ---------- state ----------
+  var state = {
+    config: {employees: [], stations: JSON.parse(JSON.stringify(DEFAULT_STATIONS)), shifts: JSON.parse(JSON.stringify(DEFAULT_SHIFTS)), contractedHours: 37.5},
+    weekStart: startOfWeek(new Date()),
+    schedule: {}, // per-day-key -> shiftId -> [{empId, stationId}]
+    activeTab: 'rota',
+    printDate: null,
+    ready: false
+  };
+
+  function startOfWeek(d){
+    var day = new Date(d);
+    var dow = (day.getDay() + 6) % 7; // Mon=0
+    day.setDate(day.getDate() - dow);
+    day.setHours(0,0,0,0);
+    return day;
+  }
+  function fmtISO(d){ return d.toISOString().slice(0,10); }
+  function addDays(d, n){ var r = new Date(d); r.setDate(r.getDate()+n); return r; }
+  function weekKey(d){ return fmtISO(startOfWeek(d)); }
+  function fmtHuman(d){ return d.toLocaleDateString('en-GB', {day:'numeric', month:'short'}); }
+  function emptySchedule(){
+    var s = {};
+    DAYS.forEach(function(d){
+      s[d.k] = {off: [], closed: false};
+      DEFAULT_SHIFTS.forEach(function(sh){ s[d.k][sh.id] = []; });
+    });
+    return s;
+  }
+  function normalizeSchedule(sched){
+    DAYS.forEach(function(d){
+      if(!sched[d.k]) sched[d.k] = {off: [], closed: false};
+      if(!sched[d.k].off) sched[d.k].off = [];
+      if(typeof sched[d.k].closed !== 'boolean') sched[d.k].closed = false;
+      state.config.shifts.forEach(function(sh){
+        if(!sched[d.k][sh.id]) sched[d.k][sh.id] = [];
+      });
+    });
+    return sched;
+  }
+
+  // ---------- storage (GitHub-backed) ----------
+  function saveConfig(message){
+    setSyncStatus('saving');
+    return queuedSave('data/config.json', state.config, message || 'Update staff/stations settings')
+      .then(function(){ setSyncStatus('ok'); })
+      .catch(function(e){ console.error('save config failed', e); setSyncStatus('error', e.message); });
+  }
+  function saveSchedule(wk, message){
+    setSyncStatus('saving');
+    var path = 'data/weeks/' + wk + '.json';
+    return queuedSave(path, state.schedule, message || ('Update rota for week of ' + wk))
+      .then(function(){ setSyncStatus('ok'); })
+      .catch(function(e){ console.error('save schedule failed', e); setSyncStatus('error', e.message); });
+  }
+  function loadConfig(){
+    return ghGetFile('data/config.json').then(function(res){
+      if(res && res.json){
+        var parsed = res.json;
+        if(parsed.employees) state.config.employees = parsed.employees;
+        if(parsed.stations) state.config.stations = parsed.stations;
+        if(parsed.shifts) state.config.shifts = parsed.shifts;
+        state.config.contractedHours = (typeof parsed.contractedHours === 'number') ? parsed.contractedHours : 37.5;
+      }
+      // res === null means the file doesn't exist yet (first run) -- keep defaults.
+    });
+  }
+  function loadScheduleForWeek(wk){
+    var path = 'data/weeks/' + wk + '.json';
+    return ghGetFile(path).then(function(res){
+      state.schedule = (res && res.json) ? normalizeSchedule(res.json) : emptySchedule();
+    });
+  }
+
+  // ---------- helpers ----------
+  function activeEmployees(){ return state.config.employees.filter(function(e){ return e.active !== false; }); }
+  function empName(id){ var e = state.config.employees.find(function(x){ return x.id === id; }); return e ? e.name : '(removed)'; }
+  function stationName(id){ var s = state.config.stations.find(function(x){ return x.id === id; }); return s ? s.name : '(removed)'; }
+  function shiftById(id){ return state.config.shifts.find(function(x){ return x.id === id; }); }
+
+  function employeesWorkingOnDay(dayKey){
+    var ids = [];
+    var day = state.schedule[dayKey] || {};
+    Object.keys(day).forEach(function(shiftId){
+      (day[shiftId]||[]).forEach(function(a){ ids.push(a.empId); });
+    });
+    return ids;
+  }
+
+  function coverageFor(dayKey, shiftId){
+    var assigns = (state.schedule[dayKey] && state.schedule[dayKey][shiftId]) || [];
+    var out = {};
+    state.config.stations.forEach(function(st){
+      var count = assigns.filter(function(a){ return a.stationId === st.id; }).length;
+      var target = (st.targets && st.targets[shiftId]) || 0;
+      out[st.id] = {count: count, target: target};
+    });
+    return out;
+  }
+
+  function parseTimeToMinutes(str){
+    var parts = (str||'').split(':');
+    var h = parseInt(parts[0],10) || 0, m = parseInt(parts[1],10) || 0;
+    return h*60 + m;
+  }
+  function shiftDurationHours(sh){
+    var start = parseTimeToMinutes(sh.start), end = parseTimeToMinutes(sh.end);
+    var diff = end - start;
+    if(diff < 0) diff += 24*60; // overnight shift
+    return diff / 60;
+  }
+  function weekHoursSummary(){
+    var totals = {}; // empId -> {hours, shifts}
+    DAYS.forEach(function(d){
+      var day = state.schedule[d.k] || {};
+      if(day.closed) return;
+      state.config.shifts.forEach(function(sh){
+        (day[sh.id] || []).forEach(function(a){
+          if(!totals[a.empId]) totals[a.empId] = {hours:0, shifts:0};
+          totals[a.empId].hours += shiftDurationHours(sh);
+          totals[a.empId].shifts += 1;
+        });
+      });
+    });
+    return totals;
+  }
+  function weekGapsList(){
+    var gaps = [];
+    DAYS.forEach(function(d){
+      var day = state.schedule[d.k] || {};
+      if(day.closed) return;
+      state.config.shifts.forEach(function(sh){
+        var cov = coverageFor(d.k, sh.id);
+        state.config.stations.forEach(function(st){
+          var c = cov[st.id];
+          if(c.target > 0 && c.count < c.target){
+            gaps.push({day: d.label, shift: sh.name, station: st.name, count: c.count, target: c.target});
+          }
+        });
+      });
+    });
+    return gaps;
+  }
+
+  // ---------- rendering: ROTA TAB ----------
+  function renderRota(){
+    var el = document.getElementById('tab-rota');
+    var wk = state.weekStart;
+    var html = '';
+
+    var gaps = weekGapsList();
+    if(gaps.length){
+      html += '<div class="gaps-banner"><span class="gtitle">' + gaps.length + ' gap' + (gaps.length===1?'':'s') + ' this week</span><ul class="gaps-list">';
+      gaps.forEach(function(g){
+        html += '<li>' + escapeHtml(g.day) + ' &middot; ' + escapeHtml(g.shift) + ' &middot; ' + escapeHtml(g.station) + ' - ' + g.count + '/' + g.target + '</li>';
+      });
+      html += '</ul></div>';
+    } else {
+      html += '<div class="gaps-banner ok"><span class="gtitle">Fully staffed</span>No gaps against your station targets this week.</div>';
+    }
+
+    html += '<div class="toolbar">';
+    html += '<button class="btn" id="btnCopyLastWeek">&#8635; Copy last week</button>';
+    html += '<button class="btn danger" id="btnClearWeek">Clear this week</button>';
+    html += '<a class="btn" style="margin-left:auto;" target="_blank" rel="noopener" href="https://github.com/'+GITHUB_OWNER+'/'+GITHUB_REPO+'/commits/'+GITHUB_BRANCH+'/data/weeks/'+weekKey(wk)+'.json">History for this week &rarr;</a>';
+    html += '</div>';
+
+    html += '<div class="rota-scroll"><table class="rota"><thead><tr>';
+    html += '<th class="shiftcol">Shift</th>';
+    DAYS.forEach(function(d, i){
+      var date = addDays(wk, i);
+      var isToday = fmtISO(date) === fmtISO(new Date());
+      var isClosed = (state.schedule[d.k] && state.schedule[d.k].closed) || false;
+      html += '<th class="'+(isToday?'today':'')+'">' + d.label + '<span class="daynum">' + fmtHuman(date) + '</span>';
+      html += '<label class="closed-toggle"><input type="checkbox" class="closed-check" data-day="'+d.k+'" '+(isClosed?'checked':'')+'> Closed</label>';
+      html += '</th>';
+    });
+    html += '</tr></thead><tbody>';
+
+    html += '<tr class="offrow"><td class="shiftcell"><div class="shift-name">Staff off</div></td>';
+    DAYS.forEach(function(d){
+      var isClosed = (state.schedule[d.k] && state.schedule[d.k].closed) || false;
+      if(isClosed){
+        html += '<td class="off-cell closed-cell"><div class="closed-msg">Warehouse closed</div></td>';
+        return;
+      }
+      var offIds = (state.schedule[d.k] && state.schedule[d.k].off) || [];
+      html += '<td class="off-cell" data-offday="'+d.k+'"><span class="off-label">Unavailable</span>';
+      offIds.forEach(function(empId, idx){
+        html += '<span class="off-chip">' + escapeHtml(empName(empId)) + '<button data-action="unoff" data-day="'+d.k+'" data-idx="'+idx+'">&times;</button></span>';
+      });
+      html += '<div class="off-addrow"><select class="mini off-select" data-day="'+d.k+'"><option value="">+ Mark off&hellip;</option>';
+      activeEmployees().forEach(function(e){
+        if(offIds.indexOf(e.id) === -1){
+          html += '<option value="'+e.id+'">' + escapeHtml(e.name) + '</option>';
+        }
+      });
+      html += '</select></div></td>';
+    });
+    html += '</tr>';
+
+    state.config.shifts.forEach(function(sh){
+      html += '<tr>';
+      html += '<td class="shiftcell"><div class="shift-name">' + sh.name + '</div><div class="shift-time">' + sh.start + '&ndash;' + sh.end + '</div></td>';
+      DAYS.forEach(function(d, i){
+        var date = addDays(wk, i);
+        var isToday = fmtISO(date) === fmtISO(new Date());
+        var isClosed = (state.schedule[d.k] && state.schedule[d.k].closed) || false;
+        if(isClosed){
+          html += '<td class="daycell closed-cell '+(isToday?'today':'')+'"><div class="closed-msg">Warehouse closed</div></td>';
+          return;
+        }
+        var assigns = (state.schedule[d.k] && state.schedule[d.k][sh.id]) || [];
+        var workingElsewhere = employeesWorkingOnDay(d.k);
+        var offToday = (state.schedule[d.k] && state.schedule[d.k].off) || [];
+
+        html += '<td class="daycell '+(isToday?'today':'')+'" data-day="'+d.k+'" data-shift="'+sh.id+'">';
+        assigns.forEach(function(a, idx){
+          var elsewhereCount = workingElsewhere.filter(function(x){return x===a.empId;}).length;
+          var isOff = offToday.indexOf(a.empId) !== -1;
+          var warn = elsewhereCount > 1 || isOff;
+          var warnMsg = isOff ? 'Marked off this day' : (elsewhereCount>1 ? 'Already scheduled elsewhere this day' : '');
+          html += '<div class="chip '+(warn?'warn':'')+'" title="'+warnMsg+'">';
+          html += '<div><span class="who">' + escapeHtml(empName(a.empId)) + '</span><span class="station">' + escapeHtml(stationName(a.stationId)) + '</span></div>';
+          html += '<button class="rm" data-action="remove" data-day="'+d.k+'" data-shift="'+sh.id+'" data-idx="'+idx+'">&times;</button>';
+          html += '</div>';
+        });
+
+        // add row
+        var unassigned = activeEmployees();
+        html += '<div class="addrow">';
+        html += '<select class="mini emp-select" data-day="'+d.k+'" data-shift="'+sh.id+'">';
+        html += '<option value="">+ Add staff&hellip;</option>';
+        unassigned.forEach(function(e){
+          var already = assigns.some(function(a){ return a.empId === e.id; });
+          var isOff = offToday.indexOf(e.id) !== -1;
+          if(!already && !isOff){
+            html += '<option value="'+e.id+'">' + escapeHtml(e.name) + '</option>';
+          }
+        });
+        html += '</select>';
+        html += '<select class="mini station-select" data-day="'+d.k+'" data-shift="'+sh.id+'">';
+        state.config.stations.forEach(function(st){
+          html += '<option value="'+st.id+'">' + escapeHtml(st.name) + '</option>';
+        });
+        html += '</select>';
+        html += '<button class="addbtn" data-action="add" data-day="'+d.k+'" data-shift="'+sh.id+'" disabled>+</button>';
+        html += '</div>';
+
+        // coverage strip
+        var cov = coverageFor(d.k, sh.id);
+        html += '<div class="coverage-strip">';
+        state.config.stations.forEach(function(st){
+          var c = cov[st.id];
+          if(c.target === 0 && c.count === 0) {
+            html += '<span class="badge zero">' + escapeHtml(shortCode(st.name)) + ' &ndash;</span>';
+          } else {
+            var cls = c.count >= c.target ? 'ok' : 'under';
+            html += '<span class="badge '+cls+'">' + escapeHtml(shortCode(st.name)) + ' ' + c.count + '/' + c.target + '</span>';
+          }
+        });
+        html += '</div>';
+
+        html += '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+
+    var totals = weekHoursSummary();
+    var contracted = state.config.contractedHours || 37.5;
+    var totalRows = Object.keys(totals).map(function(empId){
+      return {id: empId, name: empName(empId), hours: totals[empId].hours, shifts: totals[empId].shifts};
+    }).sort(function(a,b){ return b.hours - a.hours; });
+    html += '<div class="card hours-card"><h2>Hours this week <span class="tag">contracted: ' + contracted + 'h</span></h2>';
+    if(totalRows.length === 0){
+      html += '<div class="empty-note">No one is scheduled yet.</div>';
+    } else {
+      html += '<table class="hours"><thead><tr><th>Name</th><th>Shifts</th><th>Hours</th><th>Vs. contracted</th></tr></thead><tbody>';
+      totalRows.forEach(function(r){
+        var diff = r.hours - contracted;
+        var diffLabel = diff === 0 ? 'On target' : (diff > 0 ? '+' + diff.toFixed(1) + 'h over' : diff.toFixed(1) + 'h under');
+        html += '<tr class="'+(r.hours>contracted?'over':'')+'"><td>' + escapeHtml(r.name) + '</td><td>' + r.shifts + '</td><td class="hrs">' + r.hours.toFixed(1) + '</td><td>' + diffLabel + '</td></tr>';
+      });
+      html += '</tbody></table>';
+    }
+    html += '</div>';
+
+    el.innerHTML = html;
+
+    // wire closed-day toggle
+    el.querySelectorAll('.closed-check').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        var day = cb.getAttribute('data-day');
+        state.schedule[day].closed = cb.checked;
+        saveSchedule(weekKey(state.weekStart));
+        renderRota();
+      });
+    });
+
+    // wire off-row events
+    el.querySelectorAll('.off-select').forEach(function(sel){
+      sel.addEventListener('change', function(){
+        var day = sel.getAttribute('data-day');
+        if(!sel.value) return;
+        state.schedule[day].off = state.schedule[day].off || [];
+        state.schedule[day].off.push(sel.value);
+        saveSchedule(weekKey(state.weekStart));
+        renderRota();
+      });
+    });
+    el.querySelectorAll('[data-action="unoff"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var day = btn.getAttribute('data-day'), idx = parseInt(btn.getAttribute('data-idx'),10);
+        state.schedule[day].off.splice(idx,1);
+        saveSchedule(weekKey(state.weekStart));
+        renderRota();
+      });
+    });
+
+    // wire employee dropdown to enable/disable its add button
+    el.querySelectorAll('.emp-select').forEach(function(sel){
+      sel.addEventListener('change', function(){
+        var btn = sel.closest('td').querySelector('.addbtn');
+        if(btn) btn.disabled = !sel.value;
+      });
+    });
+
+    // wire events
+    el.querySelectorAll('[data-action="add"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var day = btn.getAttribute('data-day'), shift = btn.getAttribute('data-shift');
+        var cell = btn.closest('td');
+        var empSel = cell.querySelector('.emp-select');
+        var stSel = cell.querySelector('.station-select');
+        if(!empSel.value) return;
+        state.schedule[day][shift] = state.schedule[day][shift] || [];
+        state.schedule[day][shift].push({empId: empSel.value, stationId: stSel.value});
+        saveSchedule(weekKey(state.weekStart));
+        renderRota();
+      });
+    });
+    el.querySelectorAll('[data-action="remove"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var day = btn.getAttribute('data-day'), shift = btn.getAttribute('data-shift'), idx = parseInt(btn.getAttribute('data-idx'),10);
+        state.schedule[day][shift].splice(idx,1);
+        saveSchedule(weekKey(state.weekStart));
+        renderRota();
+      });
+    });
+    document.getElementById('btnCopyLastWeek').addEventListener('click', function(){
+      var lastWeekKey = weekKey(addDays(state.weekStart, -7));
+      ghGetFile('data/weeks/' + lastWeekKey + '.json').then(function(res){
+        state.schedule = (res && res.json) ? normalizeSchedule(res.json) : emptySchedule();
+        saveSchedule(weekKey(state.weekStart), 'Copy rota from week of ' + lastWeekKey);
+        renderRota();
+      }).catch(function(e){
+        console.error('copy last week failed', e);
+        setSyncStatus('error', e.message);
+      });
+    });
+    document.getElementById('btnClearWeek').addEventListener('click', function(){
+      if(!confirm('Clear all assignments for this week? This cannot be undone.')) return;
+      state.schedule = emptySchedule();
+      saveSchedule(weekKey(state.weekStart));
+      renderRota();
+    });
+  }
+
+  function shortCode(name){
+    var words = name.trim().split(/\s+/);
+    if(words.length === 1) return words[0].slice(0,4).toUpperCase();
+    return words.map(function(w){ return w[0]; }).join('').toUpperCase();
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  // ---------- rendering: STAFF TAB ----------
+  function renderStaff(){
+    var el = document.getElementById('tab-staff');
+    var html = '<div class="card">';
+    html += '<h2>Team settings</h2>';
+    html += '<label style="font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px;">Contracted hours per week (applies to everyone)';
+    html += '<input type="number" min="0" step="0.5" id="contractedHoursInput" value="'+state.config.contractedHours+'" style="width:80px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;font-family:Inter;">';
+    html += '</label>';
+    html += '</div>';
+    html += '<div class="card">';
+    html += '<h2>History</h2>';
+    html += '<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Every change here is saved as a commit to your GitHub repo, so full history is already kept automatically &ndash; nothing to back up manually.</div>';
+    html += '<a class="btn" target="_blank" rel="noopener" href="https://github.com/'+GITHUB_OWNER+'/'+GITHUB_REPO+'/commits/'+GITHUB_BRANCH+'/data">View change history on GitHub &rarr;</a>';
+    html += '</div>';
+    html += '<div class="card">';
+    html += '<h2>Staff</h2>';
+    html += '<table class="plain"><thead><tr><th>Name</th><th style="width:90px;">Active</th><th style="width:50px;"></th></tr></thead><tbody id="staffRows">';
+    state.config.employees.forEach(function(e, idx){
+      html += '<tr class="'+(e.active===false?'inactive-row':'')+'" data-idx="'+idx+'">';
+      html += '<td><input type="text" class="empNameInput" data-idx="'+idx+'" value="'+escapeHtml(e.name)+'"></td>';
+      html += '<td style="text-align:center;"><input type="checkbox" class="empActiveInput" data-idx="'+idx+'" '+(e.active!==false?'checked':'')+'></td>';
+      html += '<td><button class="iconbtn" data-action="delEmp" data-idx="'+idx+'">&times;</button></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    html += '<div class="toolbar" style="margin-top:14px;">';
+    html += '<input type="text" id="newEmpName" class="mini" style="max-width:220px;padding:8px;" placeholder="New staff member name">';
+    html += '<button class="btn amber" id="addEmpBtn">+ Add staff</button>';
+    html += '</div>';
+    html += '</div>';
+    el.innerHTML = html;
+
+    document.getElementById('contractedHoursInput').addEventListener('change', function(){
+      var v = parseFloat(this.value);
+      state.config.contractedHours = (isNaN(v) || v < 0) ? 37.5 : v;
+      this.value = state.config.contractedHours;
+      saveConfig(); renderRota();
+    });
+
+    el.querySelectorAll('.empNameInput').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        state.config.employees[parseInt(inp.getAttribute('data-idx'),10)].name = inp.value.trim() || 'Unnamed';
+        saveConfig(); renderRota();
+      });
+    });
+    el.querySelectorAll('.empActiveInput').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        state.config.employees[parseInt(inp.getAttribute('data-idx'),10)].active = inp.checked;
+        saveConfig(); renderStaff(); renderRota();
+      });
+    });
+    el.querySelectorAll('[data-action="delEmp"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var idx = parseInt(btn.getAttribute('data-idx'),10);
+        var emp = state.config.employees[idx];
+        if(!confirm('Remove ' + emp.name + '? They will be removed from the staff list (existing rota entries will show as removed).')) return;
+        state.config.employees.splice(idx,1);
+        saveConfig(); renderStaff(); renderRota();
+      });
+    });
+    document.getElementById('addEmpBtn').addEventListener('click', addEmp);
+    document.getElementById('newEmpName').addEventListener('keydown', function(e){ if(e.key==='Enter') addEmp(); });
+    function addEmp(){
+      var inp = document.getElementById('newEmpName');
+      var name = inp.value.trim();
+      if(!name) return;
+      state.config.employees.push({id: uid('emp'), name: name, active: true});
+      inp.value = '';
+      saveConfig(); renderStaff(); renderRota();
+    }
+  }
+
+  // ---------- rendering: STATIONS TAB ----------
+  function renderStations(){
+    var el = document.getElementById('tab-stations');
+    var html = '<div class="card">';
+    html += '<h2>Stations &amp; required headcount per shift</h2>';
+    html += '<table class="plain"><thead><tr><th>Station</th>';
+    state.config.shifts.forEach(function(sh){ html += '<th style="text-align:center;">'+sh.name+'<br><span class="tag">'+sh.start+'&ndash;'+sh.end+'</span></th>'; });
+    html += '<th style="width:40px;"></th></tr></thead><tbody>';
+    state.config.stations.forEach(function(st, idx){
+      html += '<tr>';
+      html += '<td><input type="text" class="stNameInput" data-idx="'+idx+'" value="'+escapeHtml(st.name)+'"></td>';
+      state.config.shifts.forEach(function(sh){
+        var val = (st.targets && st.targets[sh.id]) || 0;
+        html += '<td style="text-align:center;"><input type="number" min="0" class="stTargetInput" data-idx="'+idx+'" data-shift="'+sh.id+'" value="'+val+'"></td>';
+      });
+      html += '<td><button class="iconbtn" data-action="delStation" data-idx="'+idx+'">&times;</button></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    html += '<div class="toolbar" style="margin-top:14px;">';
+    html += '<input type="text" id="newStName" class="mini" style="max-width:220px;padding:8px;" placeholder="New station name">';
+    html += '<button class="btn amber" id="addStBtn">+ Add station</button>';
+    html += '</div></div>';
+
+    html += '<div class="card">';
+    html += '<h2>Shift times</h2>';
+    html += '<table class="plain"><thead><tr><th>Shift name</th><th>Start</th><th>End</th></tr></thead><tbody>';
+    state.config.shifts.forEach(function(sh, idx){
+      html += '<tr>';
+      html += '<td><input type="text" class="shNameInput" data-idx="'+idx+'" value="'+escapeHtml(sh.name)+'"></td>';
+      html += '<td><input type="text" class="shStartInput" data-idx="'+idx+'" value="'+escapeHtml(sh.start)+'" style="max-width:90px;"></td>';
+      html += '<td><input type="text" class="shEndInput" data-idx="'+idx+'" value="'+escapeHtml(sh.end)+'" style="max-width:90px;"></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    el.innerHTML = html;
+
+    el.querySelectorAll('.stNameInput').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        state.config.stations[parseInt(inp.getAttribute('data-idx'),10)].name = inp.value.trim() || 'Unnamed';
+        saveConfig(); renderStations(); renderRota();
+      });
+    });
+    el.querySelectorAll('.stTargetInput').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        var idx = parseInt(inp.getAttribute('data-idx'),10), shift = inp.getAttribute('data-shift');
+        var st = state.config.stations[idx];
+        st.targets = st.targets || {};
+        st.targets[shift] = Math.max(0, parseInt(inp.value,10) || 0);
+        saveConfig(); renderRota();
+      });
+    });
+    el.querySelectorAll('[data-action="delStation"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var idx = parseInt(btn.getAttribute('data-idx'),10);
+        if(!confirm('Remove this station?')) return;
+        state.config.stations.splice(idx,1);
+        saveConfig(); renderStations(); renderRota();
+      });
+    });
+    document.getElementById('addStBtn').addEventListener('click', function(){
+      var inp = document.getElementById('newStName');
+      var name = inp.value.trim();
+      if(!name) return;
+      var targets = {};
+      state.config.shifts.forEach(function(sh){ targets[sh.id] = 0; });
+      state.config.stations.push({id: uid('st'), name: name, targets: targets});
+      inp.value='';
+      saveConfig(); renderStations(); renderRota();
+    });
+    el.querySelectorAll('.shNameInput').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        state.config.shifts[parseInt(inp.getAttribute('data-idx'),10)].name = inp.value.trim();
+        saveConfig(); renderStations(); renderRota();
+      });
+    });
+    el.querySelectorAll('.shStartInput').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        state.config.shifts[parseInt(inp.getAttribute('data-idx'),10)].start = inp.value.trim();
+        saveConfig(); renderStations(); renderRota();
+      });
+    });
+    el.querySelectorAll('.shEndInput').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        state.config.shifts[parseInt(inp.getAttribute('data-idx'),10)].end = inp.value.trim();
+        saveConfig(); renderStations(); renderRota();
+      });
+    });
+  }
+
+  // ---------- rendering: PRINT TAB ----------
+  function renderPrint(){
+    var el = document.getElementById('tab-print');
+    if(!state.printDate) state.printDate = fmtISO(new Date());
+    if(!state.printMode) state.printMode = 'day';
+
+    var html = '<div class="print-controls no-print">';
+    html += '<div class="print-mode-toggle">';
+    html += '<button data-mode="day" class="'+(state.printMode==='day'?'active':'')+'">Day</button>';
+    html += '<button data-mode="week" class="'+(state.printMode==='week'?'active':'')+'">Week (noticeboard)</button>';
+    html += '</div>';
+    if(state.printMode === 'day'){
+      html += '<label style="font-weight:600;font-size:12.5px;">Date: <input type="date" id="printDateInput" value="'+state.printDate+'" style="margin-left:6px;padding:6px;border:1px solid var(--line);border-radius:6px;"></label>';
+    } else {
+      html += '<span style="font-size:12.5px;color:var(--muted);">Prints the week currently open in the Rota tab: ' + fmtHuman(state.weekStart) + ' &ndash; ' + fmtHuman(addDays(state.weekStart,6)) + '</span>';
+    }
+    html += '<button class="btn primary" id="printBtn">&#128438; Print</button>';
+    html += '</div>';
+    html += '<div id="printSheet"></div>';
+    el.innerHTML = html;
+
+    el.querySelectorAll('.print-mode-toggle button').forEach(function(b){
+      b.addEventListener('click', function(){
+        state.printMode = b.getAttribute('data-mode');
+        renderPrint();
+      });
+    });
+    var dateInput = document.getElementById('printDateInput');
+    if(dateInput){
+      dateInput.addEventListener('change', function(){
+        state.printDate = this.value;
+        loadDataForPrint();
+      });
+    }
+    document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+
+    loadDataForPrint();
+  }
+
+  function printedOnLine(){
+    return '<div class="printed-on">Printed ' + new Date().toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}) + '</div>';
+  }
+
+  function renderDaySheetHtml(d, scheduleForDay, standalone){
+    var offIds = (scheduleForDay && scheduleForDay.off) || [];
+    var isClosed = (scheduleForDay && scheduleForDay.closed) || false;
+    var html = '';
+    if(standalone){
+      html += '<div class="psheet-header"><h2>Daily Plan</h2><div class="pdate">' + d.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'}) + '</div></div>';
+    } else {
+      html += '<div class="pweek-day"><h2>' + d.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'}) + '</h2>';
+    }
+    if(isClosed){
+      html += '<div class="empty-note">Warehouse closed</div>';
+      if(!standalone) html += '</div>';
+      return html;
+    }
+    if(offIds.length){
+      html += '<div class="pweek-off">Off today: ' + offIds.map(function(id){ return escapeHtml(empName(id)); }).join(', ') + '</div>';
+    }
+
+    var anyAssignments = false;
+    state.config.stations.forEach(function(st){
+      var rows = [];
+      state.config.shifts.forEach(function(sh){
+        var assigns = ((scheduleForDay && scheduleForDay[sh.id]) || []).filter(function(a){ return a.stationId === st.id; });
+        assigns.forEach(function(a){
+          rows.push({name: empName(a.empId), shift: sh.name, time: sh.start + '\u2013' + sh.end});
+        });
+      });
+      html += '<div class="pstation"><h3>' + escapeHtml(st.name) + '</h3>';
+      if(rows.length === 0){
+        html += '<div class="pstation-empty">No one scheduled</div>';
+      } else {
+        anyAssignments = true;
+        html += '<table class="psheet"><thead><tr><th>Name</th><th>Shift</th><th>Time</th></tr></thead><tbody>';
+        rows.forEach(function(r){
+          html += '<tr><td>' + escapeHtml(r.name) + '</td><td>' + escapeHtml(r.shift) + '</td><td class="short">' + r.time + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      }
+      html += '</div>';
+    });
+    if(!anyAssignments){
+      html += '<div class="empty-note">Nothing scheduled for this day yet.</div>';
+    }
+    if(!standalone) html += '</div>';
+    return html;
+  }
+
+  function loadDataForPrint(){
+    var sheet = document.getElementById('printSheet');
+    if(state.printMode === 'day'){
+      var d = new Date(state.printDate + 'T00:00:00');
+      var wk = weekKey(d);
+      var dayIdx = (d.getDay() + 6) % 7;
+      var dayKey = DAYS[dayIdx].k;
+
+      var renderOne = function(scheduleForDay){
+        sheet.innerHTML = printedOnLine() + renderDaySheetHtml(d, scheduleForDay, true);
+      };
+      if(wk === weekKey(state.weekStart)){
+        renderOne(state.schedule[dayKey] || {});
+      } else {
+        ghGetFile('data/weeks/' + wk + '.json').then(function(res){
+          var sched = (res && res.json) ? normalizeSchedule(res.json) : emptySchedule();
+          renderOne(sched[dayKey] || {});
+        }).catch(function(){ renderOne({}); });
+      }
+    } else {
+      // week mode: always the currently open week
+      var html = printedOnLine();
+      html += '<div class="psheet-header"><h2>Weekly Plan</h2><div class="pdate">' + fmtHuman(state.weekStart) + ' &ndash; ' + fmtHuman(addDays(state.weekStart,6)) + '</div></div>';
+      DAYS.forEach(function(dd, i){
+        var date = addDays(state.weekStart, i);
+        html += renderDaySheetHtml(date, state.schedule[dd.k] || {}, false);
+      });
+      sheet.innerHTML = html;
+    }
+  }
+
+  // ---------- rendering: TEAM VIEW TAB (read-only) ----------
+  function renderTeamView(){
+    var el = document.getElementById('tab-team');
+    var wk = state.weekStart;
+    var html = '<div class="readonly-note">Read-only view for sharing or projecting. To make changes, switch to the Rota tab.</div>';
+
+    html += '<div class="rota-scroll"><table class="rota"><thead><tr>';
+    html += '<th class="shiftcol">Shift</th>';
+    DAYS.forEach(function(d, i){
+      var date = addDays(wk, i);
+      var isToday = fmtISO(date) === fmtISO(new Date());
+      var isClosed = (state.schedule[d.k] && state.schedule[d.k].closed) || false;
+      html += '<th class="'+(isToday?'today':'')+'">' + d.label + '<span class="daynum">' + fmtHuman(date) + '</span>' + (isClosed?'<span class="closed-toggle" style="cursor:default;">Closed</span>':'') + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+
+    html += '<tr class="offrow"><td class="shiftcell"><div class="shift-name">Staff off</div></td>';
+    DAYS.forEach(function(d){
+      var isClosed = (state.schedule[d.k] && state.schedule[d.k].closed) || false;
+      if(isClosed){
+        html += '<td class="off-cell closed-cell"><div class="closed-msg">Warehouse closed</div></td>';
+        return;
+      }
+      var offIds = (state.schedule[d.k] && state.schedule[d.k].off) || [];
+      html += '<td class="off-cell"><span class="off-label">Unavailable</span>';
+      if(offIds.length === 0){
+        html += '<span style="font-size:11.5px;color:var(--muted);">&ndash;</span>';
+      } else {
+        offIds.forEach(function(empId){
+          html += '<span class="off-chip">' + escapeHtml(empName(empId)) + '</span>';
+        });
+      }
+      html += '</td>';
+    });
+    html += '</tr>';
+
+    state.config.shifts.forEach(function(sh){
+      html += '<tr>';
+      html += '<td class="shiftcell"><div class="shift-name">' + sh.name + '</div><div class="shift-time">' + sh.start + '&ndash;' + sh.end + '</div></td>';
+      DAYS.forEach(function(d, i){
+        var date = addDays(wk, i);
+        var isToday = fmtISO(date) === fmtISO(new Date());
+        var isClosed = (state.schedule[d.k] && state.schedule[d.k].closed) || false;
+        if(isClosed){
+          html += '<td class="daycell closed-cell '+(isToday?'today':'')+'"><div class="closed-msg">Warehouse closed</div></td>';
+          return;
+        }
+        var assigns = (state.schedule[d.k] && state.schedule[d.k][sh.id]) || [];
+        html += '<td class="daycell '+(isToday?'today':'')+'">';
+        if(assigns.length === 0){
+          html += '<span style="font-size:11.5px;color:var(--muted);">Nobody scheduled</span>';
+        }
+        assigns.forEach(function(a){
+          html += '<div class="chip">';
+          html += '<div><span class="who">' + escapeHtml(empName(a.empId)) + '</span><span class="station">' + escapeHtml(stationName(a.stationId)) + '</span></div>';
+          html += '</div>';
+        });
+        var cov = coverageFor(d.k, sh.id);
+        html += '<div class="coverage-strip">';
+        state.config.stations.forEach(function(st){
+          var c = cov[st.id];
+          if(c.target === 0 && c.count === 0) {
+            html += '<span class="badge zero">' + escapeHtml(shortCode(st.name)) + ' &ndash;</span>';
+          } else {
+            var cls = c.count >= c.target ? 'ok' : 'under';
+            html += '<span class="badge '+cls+'">' + escapeHtml(shortCode(st.name)) + ' ' + c.count + '/' + c.target + '</span>';
+          }
+        });
+        html += '</div>';
+        html += '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    el.innerHTML = html;
+  }
+
+  // ---------- tabs ----------
+  function switchTab(tab){
+    state.activeTab = tab;
+    document.querySelectorAll('nav.tabs button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-tab') === tab);
+    });
+    ['rota','team','staff','stations','print'].forEach(function(t){
+      document.getElementById('tab-'+t).style.display = (t===tab) ? 'block' : 'none';
+    });
+    if(tab==='rota') renderRota();
+    if(tab==='team') renderTeamView();
+    if(tab==='staff') renderStaff();
+    if(tab==='stations') renderStations();
+    if(tab==='print') renderPrint();
+  }
+
+  function renderWeekLabel(){
+    var wk = state.weekStart;
+    var end = addDays(wk, 6);
+    document.getElementById('weekLabel').innerHTML = fmtHuman(wk) + ' &ndash; ' + fmtHuman(end) + '<small>Week ' + isoWeekNum(wk) + '</small>';
+  }
+  function isoWeekNum(d){
+    var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    var dayNum = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+    return Math.ceil((((date - yearStart) / 86400000) + 1)/7);
+  }
+
+  function gotoWeek(newStart){
+    state.weekStart = startOfWeek(newStart);
+    renderWeekLabel();
+    loadScheduleForWeek(weekKey(state.weekStart)).then(function(){
+      if(state.activeTab === 'rota') renderRota();
+      if(state.activeTab === 'team') renderTeamView();
+      if(state.activeTab === 'print') renderPrint();
+    });
+  }
+
+  document.getElementById('prevWeek').addEventListener('click', function(){ gotoWeek(addDays(state.weekStart, -7)); });
+  document.getElementById('nextWeek').addEventListener('click', function(){ gotoWeek(addDays(state.weekStart, 7)); });
+  document.querySelectorAll('nav.tabs button').forEach(function(b){
+    b.addEventListener('click', function(){ switchTab(b.getAttribute('data-tab')); });
+  });
+
+  // ---------- init ----------
+  function init(){
+    renderWeekLabel();
+
+    if(!tokenIsSet()){
+      document.getElementById('syncStatus').innerHTML = '<span class="dot" style="background:var(--red);"></span> Not connected';
+      var banner = document.getElementById('setupBanner');
+      banner.style.display = 'block';
+      banner.innerHTML = 'This tool needs to be pointed at your Cloudflare Worker. Open this file, find the lines near the top of the script reading <code>WORKER_URL</code> and <code>APP_SHARED_SECRET</code>, and fill in your Worker\'s URL and the passphrase you set for it. Nothing will save until both are filled in.';
+      document.getElementById('tab-rota').innerHTML = '<div class="empty-note">Waiting for Worker connection details to be added to this file.</div>';
+      return;
+    }
+
+    setSyncStatus('saving', 'loading your data');
+    Promise.all([
+      loadConfig(),
+      loadScheduleForWeek(weekKey(state.weekStart))
+    ]).then(function(){
+      state.ready = true;
+      setSyncStatus('ok');
+      switchTab('rota');
+    }).catch(function(err){
+      console.error('init failed', err);
+      setSyncStatus('error', err.message);
+      document.getElementById('tab-rota').innerHTML = '<div class="empty-note">Could not load data from GitHub. Check the repo name, owner, and token, then refresh. Error: ' + escapeHtml(err.message) + '</div>';
+    });
+  }
+  init();
+})();
+</script>
+</body>
+</html>
