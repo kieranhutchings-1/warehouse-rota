@@ -1,0 +1,78 @@
+{
+  "employees": [
+    {
+      "id": "emp_51k91yh",
+      "name": "Jack Kelly",
+      "active": true
+    }
+  ],
+  "stations": [
+    {
+      "id": "gi",
+      "name": "Goods In",
+      "targets": {
+        "early": 1,
+        "mid930": 1,
+        "mid1000": 0,
+        "late": 1
+      }
+    },
+    {
+      "id": "pick",
+      "name": "Picking",
+      "targets": {
+        "early": 2,
+        "mid930": 1,
+        "mid1000": 1,
+        "late": 2
+      }
+    },
+    {
+      "id": "pack",
+      "name": "Packing",
+      "targets": {
+        "early": 1,
+        "mid930": 1,
+        "mid1000": 0,
+        "late": 1
+      }
+    },
+    {
+      "id": "repl",
+      "name": "Replen",
+      "targets": {
+        "early": 1,
+        "mid930": 0,
+        "mid1000": 0,
+        "late": 1
+      }
+    }
+  ],
+  "shifts": [
+    {
+      "id": "early",
+      "name": "Early",
+      "start": "06:00",
+      "end": "14:30"
+    },
+    {
+      "id": "mid930",
+      "name": "Mid",
+      "start": "09:00",
+      "end": "17:30"
+    },
+    {
+      "id": "mid1000",
+      "name": "Mid-Late",
+      "start": "10:00",
+      "end": "18:30"
+    },
+    {
+      "id": "late",
+      "name": "Late",
+      "start": "13:30",
+      "end": "22:00"
+    }
+  ],
+  "contractedHours": 37.5
+}
