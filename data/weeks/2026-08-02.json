@@ -79,7 +79,7 @@
   },
   "sun": {
     "off": [],
-    "closed": false,
+    "closed": true,
     "early": [],
     "mid930": [],
     "mid1000": [],
