@@ -8,12 +8,7 @@
         "stationId": "st_xaykjbz"
       }
     ],
-    "mid930": [
-      {
-        "empId": "emp_51k91yh",
-        "stationId": "st_ohp2bc3"
-      }
-    ],
+    "mid930": [],
     "mid1000": [],
     "late": [
       {
@@ -32,10 +27,6 @@
       }
     ],
     "mid930": [
-      {
-        "empId": "emp_51k91yh",
-        "stationId": "st_ohp2bc3"
-      },
       {
         "empId": "emp_zwg2p03",
         "stationId": "repl"
