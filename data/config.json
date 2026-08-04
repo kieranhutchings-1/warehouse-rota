@@ -109,7 +109,7 @@
     },
     {
       "id": "repl",
-      "name": "Replen",
+      "name": "Replen / Tidy",
       "targets": {
         "early": 1,
         "mid930": 0,
