@@ -45,12 +45,7 @@
         "stationId": "repl"
       }
     ],
-    "mid1000": [
-      {
-        "empId": "emp_zei4uqx",
-        "stationId": "pack"
-      }
-    ],
+    "mid1000": [],
     "late": [
       {
         "empId": "emp_y5shiq8",
