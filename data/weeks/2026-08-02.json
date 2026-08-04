@@ -46,7 +46,12 @@
   "thu": {
     "off": [],
     "closed": false,
-    "early": [],
+    "early": [
+      {
+        "empId": "emp_lnkwkc2",
+        "stationId": "st_xaykjbz"
+      }
+    ],
     "mid930": [],
     "mid1000": [],
     "late": []
