@@ -29,14 +29,6 @@
       {
         "empId": "emp_lnkwkc2",
         "stationId": "st_xaykjbz"
-      },
-      {
-        "empId": "emp_63jxe01",
-        "stationId": "pick"
-      },
-      {
-        "empId": "emp_ugtzcpa",
-        "stationId": "repl"
       }
     ],
     "mid930": [
@@ -53,16 +45,7 @@
         "stationId": "repl"
       }
     ],
-    "mid1000": [
-      {
-        "empId": "emp_zei4uqx",
-        "stationId": "pack"
-      },
-      {
-        "empId": "emp_043mmix",
-        "stationId": "pack"
-      }
-    ],
+    "mid1000": [],
     "late": [
       {
         "empId": "emp_y5shiq8",
@@ -143,7 +126,7 @@
   },
   "sun": {
     "off": [],
-    "closed": true,
+    "closed": false,
     "early": [],
     "mid930": [],
     "mid1000": [],
