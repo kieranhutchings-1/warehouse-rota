@@ -61,6 +61,16 @@
         "mid1000": 0,
         "late": 1
       }
+    },
+    {
+      "id": "st_ohp2bc3",
+      "name": "Warehouse Manager",
+      "targets": {
+        "early": 0,
+        "mid930": 0,
+        "mid1000": 0,
+        "late": 0
+      }
     }
   ],
   "shifts": [
