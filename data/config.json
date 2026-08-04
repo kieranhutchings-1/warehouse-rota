@@ -118,16 +118,6 @@
       }
     },
     {
-      "id": "st_ohp2bc3",
-      "name": "Warehouse Manager",
-      "targets": {
-        "early": 0,
-        "mid930": 1,
-        "mid1000": 0,
-        "late": 0
-      }
-    },
-    {
       "id": "st_xaykjbz",
       "name": "Team Leader",
       "targets": {
