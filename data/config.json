@@ -91,7 +91,7 @@
       "id": "pick",
       "name": "Picking",
       "targets": {
-        "early": 2,
+        "early": 0,
         "mid930": 1,
         "mid1000": 1,
         "late": 2
