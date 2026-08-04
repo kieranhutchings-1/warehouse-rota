@@ -1,11 +1,6 @@
 {
   "employees": [
     {
-      "id": "emp_51k91yh",
-      "name": "Jack Kelly",
-      "active": true
-    },
-    {
       "id": "emp_lnkwkc2",
       "name": "Daniel Kelly",
       "active": true
