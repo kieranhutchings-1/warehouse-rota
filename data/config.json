@@ -92,7 +92,7 @@
       "name": "Picking",
       "targets": {
         "early": 1,
-        "mid930": 0,
+        "mid930": 3,
         "mid1000": 0,
         "late": 0
       }
