@@ -101,7 +101,7 @@
       "id": "pack",
       "name": "Packing",
       "targets": {
-        "early": 0,
+        "early": 2,
         "mid930": 0,
         "mid1000": 0,
         "late": 0
