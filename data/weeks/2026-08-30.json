@@ -13,7 +13,9 @@
     "late": []
   },
   "tue": {
-    "off": [],
+    "off": [
+      "emp_lnkwkc2"
+    ],
     "closed": false,
     "early": [],
     "mid930": [],
