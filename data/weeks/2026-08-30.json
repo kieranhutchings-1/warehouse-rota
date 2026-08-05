@@ -13,12 +13,7 @@
     "early": [],
     "mid930": [],
     "mid1000": [],
-    "late": [
-      {
-        "empId": "emp_y5shiq8",
-        "stationId": "repl"
-      }
-    ]
+    "late": []
   },
   "wed": {
     "off": [],
