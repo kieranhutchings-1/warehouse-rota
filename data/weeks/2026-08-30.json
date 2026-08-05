@@ -2,7 +2,12 @@
   "mon": {
     "off": [],
     "closed": false,
-    "early": [],
+    "early": [
+      {
+        "empId": "emp_lnkwkc2",
+        "stationId": "st_8x9txvu"
+      }
+    ],
     "mid930": [],
     "mid1000": [],
     "late": []
