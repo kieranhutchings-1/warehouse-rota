@@ -89,7 +89,7 @@
     },
     {
       "id": "pick",
-      "name": "Picking",
+      "name": "Picking / Packing",
       "targets": {
         "early": 1,
         "mid930": 3,
