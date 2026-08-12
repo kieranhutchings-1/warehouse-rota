@@ -98,16 +98,6 @@
       }
     },
     {
-      "id": "pack",
-      "name": "Packing",
-      "targets": {
-        "early": 2,
-        "mid930": 0,
-        "mid1000": 0,
-        "late": 0
-      }
-    },
-    {
       "id": "repl",
       "name": "Replen / Tidy",
       "targets": {
