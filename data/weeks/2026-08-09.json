@@ -1,0 +1,58 @@
+{
+  "mon": {
+    "off": [],
+    "closed": false,
+    "early": [],
+    "mid930": [],
+    "mid1000": [],
+    "late": []
+  },
+  "tue": {
+    "off": [],
+    "closed": false,
+    "early": [],
+    "mid930": [],
+    "mid1000": [],
+    "late": []
+  },
+  "wed": {
+    "off": [],
+    "closed": false,
+    "early": [],
+    "mid930": [],
+    "mid1000": [],
+    "late": []
+  },
+  "thu": {
+    "off": [],
+    "closed": false,
+    "early": [],
+    "mid930": [],
+    "mid1000": [],
+    "late": []
+  },
+  "fri": {
+    "off": [],
+    "closed": false,
+    "early": [],
+    "mid930": [],
+    "mid1000": [],
+    "late": []
+  },
+  "sat": {
+    "off": [],
+    "closed": false,
+    "early": [],
+    "mid930": [],
+    "mid1000": [],
+    "late": []
+  },
+  "sun": {
+    "off": [],
+    "closed": false,
+    "early": [],
+    "mid930": [],
+    "mid1000": [],
+    "late": []
+  }
+}
