@@ -1,8 +1,6 @@
 {
   "mon": {
-    "off": [
-      "emp_lnkwkc2"
-    ],
+    "off": [],
     "closed": false,
     "early": [],
     "mid930": [],
@@ -43,7 +41,7 @@
   },
   "sat": {
     "off": [],
-    "closed": true,
+    "closed": false,
     "early": [],
     "mid930": [],
     "mid1000": [],
