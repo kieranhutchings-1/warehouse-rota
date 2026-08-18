@@ -10,7 +10,9 @@
     "late": []
   },
   "tue": {
-    "off": [],
+    "off": [
+      "emp_q1fpgry"
+    ],
     "closed": false,
     "early": [],
     "mid930": [],
