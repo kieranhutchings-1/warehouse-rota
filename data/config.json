@@ -84,7 +84,7 @@
   "stations": [
     {
       "id": "gi",
-      "name": "Goods In / Floater",
+      "name": "Unnamed",
       "targets": {
         "early": 0,
         "mid930": 0,
