@@ -42,6 +42,10 @@
       {
         "empId": "emp_zei4uqx",
         "stationId": "pick"
+      },
+      {
+        "empId": "emp_zwg2p03",
+        "stationId": "repl"
       }
     ],
     "mid1000": [],
