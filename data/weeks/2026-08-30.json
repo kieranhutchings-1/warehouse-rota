@@ -252,12 +252,7 @@
         "stationId": "pick"
       }
     ],
-    "mid1000": [
-      {
-        "empId": "emp_ivt2zg0",
-        "stationId": "st_8x9txvu"
-      }
-    ],
+    "mid1000": [],
     "late": [
       {
         "empId": "emp_043mmix",
