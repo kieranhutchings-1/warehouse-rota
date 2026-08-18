@@ -193,7 +193,12 @@
         "stationId": "st_8x9txvu"
       }
     ],
-    "late": []
+    "late": [
+      {
+        "empId": "emp_043mmix",
+        "stationId": "pick"
+      }
+    ]
   },
   "fri": {
     "off": [
