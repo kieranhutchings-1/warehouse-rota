@@ -44,7 +44,9 @@
     "late": []
   },
   "fri": {
-    "off": [],
+    "off": [
+      "emp_ugtzcpa"
+    ],
     "closed": false,
     "early": [],
     "mid930": [],
