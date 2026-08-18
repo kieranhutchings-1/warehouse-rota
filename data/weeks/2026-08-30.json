@@ -233,7 +233,12 @@
         "stationId": "st_8x9txvu"
       }
     ],
-    "mid930": [],
+    "mid930": [
+      {
+        "empId": "emp_ksbmg2c",
+        "stationId": "pick"
+      }
+    ],
     "mid1000": [],
     "late": []
   },
