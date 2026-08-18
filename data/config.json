@@ -83,16 +83,6 @@
   ],
   "stations": [
     {
-      "id": "gi",
-      "name": "Unnamed",
-      "targets": {
-        "early": 0,
-        "mid930": 0,
-        "mid1000": 0,
-        "late": 0
-      }
-    },
-    {
       "id": "pick",
       "name": "Picking / Packing",
       "targets": {
