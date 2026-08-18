@@ -237,6 +237,10 @@
       {
         "empId": "emp_ksbmg2c",
         "stationId": "pick"
+      },
+      {
+        "empId": "emp_zwg2p03",
+        "stationId": "repl"
       }
     ],
     "mid1000": [
