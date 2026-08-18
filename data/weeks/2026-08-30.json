@@ -119,6 +119,10 @@
       {
         "empId": "emp_w8g0yvj",
         "stationId": "pick"
+      },
+      {
+        "empId": "emp_63jxe01",
+        "stationId": "pick"
       }
     ],
     "late": []
