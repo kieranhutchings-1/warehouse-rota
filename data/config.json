@@ -116,7 +116,7 @@
       "id": "st_8x9txvu",
       "name": "Key Account Picking",
       "targets": {
-        "early": 1,
+        "early": 0,
         "mid930": 0,
         "mid1000": 0,
         "late": 0
