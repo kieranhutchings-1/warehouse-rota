@@ -283,7 +283,12 @@
   "sun": {
     "off": [],
     "closed": false,
-    "early": [],
+    "early": [
+      {
+        "empId": "emp_zei4uqx",
+        "stationId": "st_p9f41sf"
+      }
+    ],
     "mid930": [],
     "mid1000": [],
     "late": []
