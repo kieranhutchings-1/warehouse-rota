@@ -183,7 +183,12 @@
         "stationId": "pick"
       }
     ],
-    "mid1000": [],
+    "mid1000": [
+      {
+        "empId": "emp_63jxe01",
+        "stationId": "pick"
+      }
+    ],
     "late": []
   },
   "fri": {
