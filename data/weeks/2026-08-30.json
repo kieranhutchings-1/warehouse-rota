@@ -38,7 +38,12 @@
         "stationId": "pick"
       }
     ],
-    "mid930": [],
+    "mid930": [
+      {
+        "empId": "emp_zei4uqx",
+        "stationId": "pick"
+      }
+    ],
     "mid1000": [],
     "late": []
   },
