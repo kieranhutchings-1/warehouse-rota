@@ -44,7 +44,12 @@
       "emp_zwg2p03"
     ],
     "closed": false,
-    "early": [],
+    "early": [
+      {
+        "empId": "emp_lnkwkc2",
+        "stationId": "repl"
+      }
+    ],
     "mid930": [],
     "mid1000": [],
     "late": []
