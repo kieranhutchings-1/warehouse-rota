@@ -97,7 +97,7 @@
       "name": "Picking / Packing",
       "targets": {
         "early": 0,
-        "mid930": 3,
+        "mid930": 0,
         "mid1000": 0,
         "late": 0
       }
