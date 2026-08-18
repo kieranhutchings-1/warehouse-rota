@@ -48,7 +48,12 @@
         "stationId": "repl"
       }
     ],
-    "mid1000": [],
+    "mid1000": [
+      {
+        "empId": "emp_w8g0yvj",
+        "stationId": "pick"
+      }
+    ],
     "late": [
       {
         "empId": "emp_y5shiq8",
